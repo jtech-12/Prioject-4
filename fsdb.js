@@ -3,7 +3,6 @@ const path = require('path');
 
 const DB_FILE = path.join(__dirname, 'database.json');
 
-// Helper to read data from the database file
 function readDatabase() {
   try {
     const data = fs.readFileSync(DB_FILE, 'utf8');
