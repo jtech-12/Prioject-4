@@ -13,7 +13,6 @@ function readDatabase() {
   }
 }
 
-// Helper to write data to the database file
 function writeDatabase(data) {
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
