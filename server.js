@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const router = express.Router();
 
-const DATABASE_PATH = './data/database.json';
+const DATABASE_PATH = 'database.json';
 
 // Utility function to read/write to the database
 function readDatabase() {
