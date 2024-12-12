@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Fallback to 3000 if PORT is not set
+const PORT = process.env.PORT || 3000; 
 const DATABASE_PATH = path.join(__dirname, 'database.json');
 
 app.use(bodyParser.json()); 
