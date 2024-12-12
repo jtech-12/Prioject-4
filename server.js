@@ -7,10 +7,8 @@ const app = express();
 const PORT = process.env.PORT || 3000; // Fallback to 3000 if PORT is not set
 const DATABASE_PATH = path.join(__dirname, 'database.json');
 
-// Middleware
-app.use(bodyParser.json()); // Parse JSON requests
+app.use(bodyParser.json()); 
 
-// Utility functions for database handling
 function readDatabase() {
   if (!fs.existsSync(DATABASE_PATH)) {
     return [];
@@ -28,7 +26,6 @@ function writeDatabase(data) {
   fs.writeFileSync(DATABASE_PATH, JSON.stringify(data, null, 2));
 }
 
-// Routes
 app.post('/api/register', (req, res) => {
   const { name, email, eventName, date } = req.body;
 
@@ -90,15 +87,12 @@ app.delete('/api/registrations/cancel/:ticketNumber', (req, res) => {
   res.json({ message: `Ticket ${ticketNumber} has been canceled.` });
 });
 
-// Serve static files
 app.use(express.static(path.join(__dirname, 'rec')));
 
-// Default route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'rec/view/register.html'));
 });
 
-// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
