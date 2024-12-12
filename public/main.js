@@ -1,7 +1,5 @@
-// Define the base URL for the API endpoints
 const baseURL = '/api';
 
-// Utility function for sending POST requests
 async function postData(url, data) {
   const response = await fetch(url, {
     method: 'POST',
@@ -13,13 +11,11 @@ async function postData(url, data) {
   return response.json();
 }
 
-// Utility function for sending GET requests
 async function getData(url) {
   const response = await fetch(url);
   return response.json();
 }
 
-// Utility function for sending DELETE requests
 async function deleteData(url) {
   const response = await fetch(url, {
     method: 'DELETE',
@@ -27,9 +23,8 @@ async function deleteData(url) {
   return response.json();
 }
 
-// Register for an event
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
-  e.preventDefault(); // Prevent default form submission
+  e.preventDefault(); 
 
   const name = document.getElementById('name').value;
   const email = document.getElementById('email').value;
@@ -42,11 +37,10 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     alert(`Error: ${response.error}`);
   } else {
     alert(`Registration successful! Ticket Number: ${response.ticketNumber}`);
-    document.getElementById('registerForm').reset(); // Reset the form fields
+    document.getElementById('registerForm').reset();
   }
 });
 
-// View all registrations
 document.getElementById('viewRegistrations').addEventListener('click', async () => {
   const registrations = await getData(`${baseURL}/registrations`);
 
@@ -61,7 +55,6 @@ document.getElementById('viewRegistrations').addEventListener('click', async () 
   }
 });
 
-// Search for registrations by name
 document.getElementById('searchByNameForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -80,7 +73,6 @@ document.getElementById('searchByNameForm').addEventListener('submit', async (e)
   }
 });
 
-// Cancel a registration
 document.getElementById('cancelForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
