@@ -1,16 +1,27 @@
 const express = require('express');
 const fs = require('fs');
-const router = express.Router();
+const bodyParser = require('body-parser');
+const path = require('path');
 
-const DATABASE_PATH = 'database.json';
+const app = express();
+const PORT = process.env.PORT || 3000; // Fallback to 3000 if PORT is not set
+const DATABASE_PATH = path.join(__dirname, 'database.json');
 
-// Utility function to read/write to the database
+// Middleware
+app.use(bodyParser.json()); // Parse JSON requests
+
+// Utility functions for database handling
 function readDatabase() {
   if (!fs.existsSync(DATABASE_PATH)) {
     return [];
   }
-  const data = fs.readFileSync(DATABASE_PATH, 'utf-8');
-  return data ? JSON.parse(data) : [];
+  try {
+    const data = fs.readFileSync(DATABASE_PATH, 'utf-8');
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Error reading database:', error);
+    return [];
+  }
 }
 
 function writeDatabase(data) {
@@ -18,7 +29,7 @@ function writeDatabase(data) {
 }
 
 // Routes
-router.post('/register', (req, res) => {
+app.post('/api/register', (req, res) => {
   const { name, email, eventName, date } = req.body;
 
   if (!name || !email || !eventName || !date) {
@@ -35,12 +46,12 @@ router.post('/register', (req, res) => {
   res.json(newRegistration);
 });
 
-router.get('/registrations', (req, res) => {
+app.get('/api/registrations', (req, res) => {
   const database = readDatabase();
   res.json(database);
 });
 
-router.get('/registrations/byname/:name', (req, res) => {
+app.get('/api/registrations/byname/:name', (req, res) => {
   const name = req.params.name;
   const database = readDatabase();
   const userRegistrations = database.filter(reg => reg.name === name);
@@ -52,7 +63,7 @@ router.get('/registrations/byname/:name', (req, res) => {
   res.json(userRegistrations);
 });
 
-router.get('/registrations/event/:eventName', (req, res) => {
+app.get('/api/registrations/event/:eventName', (req, res) => {
   const eventName = req.params.eventName;
   const database = readDatabase();
   const eventRegistrations = database.filter(reg => reg.eventName === eventName);
@@ -64,7 +75,7 @@ router.get('/registrations/event/:eventName', (req, res) => {
   res.json(eventRegistrations);
 });
 
-router.delete('/registrations/cancel/:ticketNumber', (req, res) => {
+app.delete('/api/registrations/cancel/:ticketNumber', (req, res) => {
   const ticketNumber = req.params.ticketNumber;
   let database = readDatabase();
 
@@ -79,5 +90,16 @@ router.delete('/registrations/cancel/:ticketNumber', (req, res) => {
   res.json({ message: `Ticket ${ticketNumber} has been canceled.` });
 });
 
-module.exports = router;
+// Serve static files
+app.use(express.static(path.join(__dirname, 'rec')));
+
+// Default route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'rec/view/register.html'));
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
 
