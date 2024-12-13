@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const confirmationDiv = document.getElementById('confirmation');
   const resultsDiv = document.getElementById('results');
 
+  // Handle event registration form submission
   if (registrationForm) {
     registrationForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -10,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = {
         name: formData.get('name'),
         email: formData.get('email'),
-        event: formData.get('event'),
+        eventName: formData.get('event'),
         date: formData.get('date')
       };
 
@@ -21,10 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const result = await response.json();
-      confirmationDiv.innerHTML = `<p>Registration Successful! Ticket Number: ${result.ticketNumber}</p>`;
+      if (response.ok) {
+        confirmationDiv.innerHTML = `<p>Registration Successful! Ticket Number: ${result.ticketNumber}</p>`;
+      } else {
+        confirmationDiv.innerHTML = `<p>Error: ${result.error}</p>`;
+      }
     });
   }
 
+  // Handle button clicks for viewing and managing registrations
   document.addEventListener('click', async (e) => {
     if (e.target.id === 'view-all') {
       const response = await fetch('/api/registrations');
@@ -46,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'DELETE'
       });
       const result = await response.json();
-      resultsDiv.innerHTML = `<p>${result.message}</p>`;
+      resultsDiv.innerHTML = `<p>${result.message || result.error}</p>`;
     }
   });
 });
